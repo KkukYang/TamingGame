@@ -14,8 +14,8 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
+  - Monster
+  - Hero
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Character
+    uniqueID: 521322039
+    locked: 0
+  - name: Effect
+    uniqueID: 2459599703
+    locked: 0
+  - name: HP
+    uniqueID: 248241571
     locked: 0
