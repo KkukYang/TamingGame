@@ -19,5 +19,11 @@ public class Monster : MonoBehaviour
         
     }
 
-
+    public enum MonsterState
+    {
+        Idle,
+        Attack,
+        Run,
+        Dead,
+    }
 }
