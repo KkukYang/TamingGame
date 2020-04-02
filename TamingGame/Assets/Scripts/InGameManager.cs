@@ -23,7 +23,10 @@ public class InGameManager : MonoBehaviour
 
     public JoyStick joyStick;
     public Hero hero;
-
+    public Camera mainCam;
+    public GameObject UICamera;
+    public GameObject MainMapCamera;
+    public bool isMainMap;
 
     private void Awake()
     {
@@ -43,5 +46,27 @@ public class InGameManager : MonoBehaviour
             hero.SetMove(joyStick);
         }
 
+    }
+
+    public void SwitchCam()
+    {
+        Debug.Log("SwitchCam()");
+
+        if(isMainMap)
+        {
+            UICamera.SetActive(true);
+            MainMapCamera.SetActive(false);
+        }
+        else
+        {
+            MainMapCamera.transform.position = new Vector3(hero.transform.position.x
+                , hero.transform.position.y
+                , MainMapCamera.transform.position.z);
+
+            UICamera.SetActive(false);
+            MainMapCamera.SetActive(true);
+        }
+
+        isMainMap = !isMainMap;
     }
 }

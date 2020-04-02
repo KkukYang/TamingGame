@@ -16,7 +16,7 @@ TagManager:
   - PostProcessing
   - Monster
   - Hero
-  - 
+  - Fog
   - 
   - 
   - 
@@ -49,4 +49,10 @@ TagManager:
     locked: 0
   - name: HP
     uniqueID: 248241571
+    locked: 0
+  - name: JoyStick
+    uniqueID: 4256443475
+    locked: 0
+  - name: MainUI
+    uniqueID: 2316629193
     locked: 0

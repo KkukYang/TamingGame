@@ -15,7 +15,19 @@ public class FogOfWarManager : MonoBehaviour
 	private Vector3[] m_vertices;
 	private Color[] m_colors;
 
-	// Use this for initialization
+	private InGameManager inGameMgr = null;
+
+	private void Awake()
+	{
+		inGameMgr = InGameManager.instance;
+		m_player = inGameMgr.hero.transform;
+
+		if(m_fogOfWarPlane == null)
+		{
+			m_fogOfWarPlane = inGameMgr.transform.Find("Fog/Plane").gameObject;
+		}
+	}
+
 	void Start()
 	{
 		Initialize();

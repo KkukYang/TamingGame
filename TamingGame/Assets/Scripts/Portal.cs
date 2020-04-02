@@ -21,8 +21,21 @@ public class Portal : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Hero"))
         {
+            SceneManager.activeSceneChanged += InitEachScene;
             SceneManager.LoadScene("MainInGame");
 
         }
     }
+
+    public void InitEachScene(Scene current, Scene next)
+    {
+        if(SceneManager.GetActiveScene() == next)
+        {
+            //fog세팅
+            InGameManager.instance.transform.Find("Fog").gameObject.SetActive(true);
+            InGameManager.instance.mainCam.GetComponent<FogOfWarManager>().enabled = true;
+        }
+    }
+
+    
 }

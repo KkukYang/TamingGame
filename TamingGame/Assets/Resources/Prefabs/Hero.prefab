@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957905508}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1185557651}
   - component: {fileID: 1185557652}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1871964607}
   - component: {fileID: 1871964608}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HPBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,7 +166,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2034151558}
   - component: {fileID: 2034151559}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Image_hp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +245,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2124820779}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MonsterSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7488407444237975388}
   - component: {fileID: 7488407444237975389}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -358,8 +358,8 @@ GameObject:
   - component: {fileID: 7488407444497253159}
   - component: {fileID: 7488407444497253160}
   - component: {fileID: 7488407444497253161}
-  m_Layer: 0
-  m_Name: Iamge
+  m_Layer: 10
+  m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -458,7 +458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7488407444522066940}
   - component: {fileID: 7488407444522066941}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: weapon_rep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7488407444656893038}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -574,7 +574,7 @@ GameObject:
   - component: {fileID: 1745686765}
   - component: {fileID: 5052004069100802423}
   - component: {fileID: 4927509023895515011}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hero
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -623,6 +623,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eec8facea1f2125448319b7fb3283a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroState: 0
+  movingSpeed: 0.1
 --- !u!114 &5052004069100802423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,7 +663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7488407444971849909}
   - component: {fileID: 7488407444971849910}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: weapon_mam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -741,7 +743,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7488407445448601948}
   - component: {fileID: 7488407445448601949}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: weapon_bug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
