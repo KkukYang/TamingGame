@@ -16,6 +16,10 @@ public class Hero : MonoBehaviour
     public Vector3 direction;
     public Vector3 prePos;
 
+    public int hp = 100;
+    public int ap = 30;
+    public int dp = 5;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);

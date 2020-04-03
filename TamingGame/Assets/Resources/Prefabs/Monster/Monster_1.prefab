@@ -352,11 +352,11 @@ GameObject:
   - component: {fileID: 5131035731008715086}
   m_Layer: 0
   m_Name: Monster_1
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2832867959740877364
 Transform:
   m_ObjectHideFlags: 0
@@ -389,10 +389,14 @@ MonoBehaviour:
   inGameMgr: {fileID: 0}
   hero: {fileID: 0}
   isTaming: 1
+  isNoticeHero: 0
   monsterState: 0
   animator: {fileID: 0}
   image: {fileID: 0}
-  mySpot: {fileID: 0}
+  initPos: {x: 0, y: 0, z: 0}
+  hp: 100
+  ap: 1
+  dp: 0
   movingValue: 0
   dampTime: 0.13
 --- !u!135 &776089138
@@ -447,5 +451,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.24
+  m_Radius: 0.46
   m_Center: {x: 0, y: 0.25, z: 0}

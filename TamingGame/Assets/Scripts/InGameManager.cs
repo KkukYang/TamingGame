@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,7 @@ public class InGameManager : MonoBehaviour
     public Camera mainCam;
     public GameObject UICamera;
     public GameObject MainMapCamera;
+    public GameObject ground;
     public bool isMainMap;
 
     private void Awake()
@@ -69,4 +71,6 @@ public class InGameManager : MonoBehaviour
 
         isMainMap = !isMainMap;
     }
+
+
 }

@@ -8,14 +8,15 @@ public class Monster : MonoBehaviour
     public InGameManager inGameMgr;
     public Hero hero;
     public bool isTaming;
+    public bool isNoticeHero;
     public MonsterState monsterState;
     public Animator animator;
     public Transform image;
+    public Vector3 initPos;
 
-    /// <summary>
-    /// 스폰시 주어짐.
-    /// </summary>
-    public Transform mySpot;    //스폰시 주어짐.
+    public int hp = 100;
+    public int ap = 10;
+    public int dp = 0;
 
     public float movingValue;
     public float dampTime = 0.15f;
@@ -35,6 +36,7 @@ public class Monster : MonoBehaviour
 
     protected virtual void OnEnable()
     {
+        initPos = this.transform.position;
         monsterState = MonsterState.Idle;
         NextState();
     }
@@ -48,7 +50,6 @@ public class Monster : MonoBehaviour
     protected virtual void Update()
     {
         rigidBody.velocity = Vector3.zero;
-        FollowTarget(inGameMgr.hero.transform);
 
         if (isTaming && hero.heroState == Hero.HeroState.Run)
         {
@@ -63,7 +64,37 @@ public class Monster : MonoBehaviour
                 dampTime = Mathf.Clamp(dampTime, 0.1f, 0.16f);
 
             }
+            FollowTarget(inGameMgr.hero.transform);
         }
+
+        if(!isTaming && isNoticeHero)
+        {
+            //몬스터가 히어로 가까이 갔을때 부터, 히어로나 테이밍된 몬스터 공격.
+            if(Vector3.Distance(this.transform.position, hero.transform.position) < 2.0f)
+            {
+                monsterState = MonsterState.Attack;
+            }
+            else
+            {
+                //히어로한테 감.
+                transform.position = Vector3.Lerp(this.transform.position, hero.transform.position, 0.01f);
+            }
+        }
+        else if(!isTaming && !isNoticeHero)
+        {
+            if (Vector3.Distance(this.transform.position, initPos) < 1.0f)
+            {
+                monsterState = MonsterState.Idle;
+            }
+            else
+            {
+                //제자리로 감.
+                transform.position = Vector3.Lerp(this.transform.position, initPos, 0.01f);
+            }
+
+        }
+
+
     }
 
     protected virtual void NextState()

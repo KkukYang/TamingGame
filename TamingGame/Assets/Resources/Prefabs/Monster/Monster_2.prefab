@@ -352,11 +352,11 @@ GameObject:
   - component: {fileID: -4062569739950847682}
   m_Layer: 0
   m_Name: Monster_2
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2353934249771341637
 Transform:
   m_ObjectHideFlags: 0
@@ -393,6 +393,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   image: {fileID: 0}
   mySpot: {fileID: 0}
+  hp: 100
+  ap: 1
   movingValue: 0
   dampTime: 0.13
 --- !u!135 &5408241042309975566
@@ -447,5 +449,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.37
+  m_Radius: 0.71
   m_Center: {x: 0, y: 0.27, z: 0}
