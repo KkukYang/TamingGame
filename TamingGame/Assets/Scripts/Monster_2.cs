@@ -4,18 +4,73 @@ using UnityEngine;
 
 public class Monster_2 : Monster
 {
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         Debug.Log("Monster_2");
     }
-    void Start()
-    {
-        
-    }
+
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        
+        base.Update();
     }
+
+
+    protected override void NextState()
+    {
+        string methodName = monsterState.ToString() + "State";
+        StartCoroutine(methodName);
+    }
+
+    IEnumerator IdleState()
+    {
+        animator.CrossFade("Idle", 0.3f);
+
+        while (monsterState == MonsterState.Idle)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+
+    IEnumerator RunState()
+    {
+        animator.CrossFade("Run", 0.3f);
+
+
+
+        while (monsterState == MonsterState.Run)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+    IEnumerator AttackState()
+    {
+        animator.CrossFade("Attack", 0.3f);
+
+        while (monsterState == MonsterState.Attack)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+    IEnumerator DeadState()
+    {
+        animator.CrossFade("Dead", 0.3f);
+
+        while (monsterState == MonsterState.Dead)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+
 }

@@ -8,51 +8,64 @@ public class Hero : MonoBehaviour
     public float movingSpeed;
     private Transform image;
 
+    public List<Monster> havingMonster = new List<Monster>();
+    public GameObject sampleSpot;
+
+    public Rigidbody rigidBody;
+    public Animator animator;
+    public Vector3 direction;
+    public Vector3 prePos;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
-        image = this.transform.Find("Image");
+        image = transform.Find("Image");
+        animator = image.GetComponent<Animator>();
+        rigidBody = this.GetComponent<Rigidbody>();
+
+        float _val = 360.0f / havingMonster.Count;
+
+        for (int i = 0; i < havingMonster.Count; i++)
+        {
+            GameObject _obj = Instantiate(sampleSpot) as GameObject;
+            _obj.transform.parent = this.transform.Find("SpotGroup");
+            _obj.transform.name = i.ToString();
+            _obj.transform.position = new Vector3() + this.transform.position;
+
+            _obj.SetActive(true);
+
+
+        }
+
+
         Debug.Log("Hero");
     }
-    void Start()
-    {
 
+    private void OnEnable()
+    {
+        prePos = this.transform.position;
+        heroState = HeroState.Idle;
+        NextState();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        rigidBody.velocity = Vector3.zero;
+
+        if(heroState == HeroState.Run)
+        {
+            for (int i = 0; i < havingMonster.Count; i++)
+            {
+                havingMonster[i].image.localScale = this.image.localScale;
+            }
+
+            direction = (this.transform.position - prePos).normalized;
+
+            prePos = this.transform.position;
+
+        }
 
     }
-
-    /*
-    public void SetMove(Vector3 joyStickLocalPos)
-    {
-        //Debug.Log(joyStickLocalPos);
-        Vector3 resultMoving = Vector3.zero;
-        if(joyStickLocalPos.x >0)
-        {
-            resultMoving += new Vector3(1.0f, 0.0f);
-        }
-        else if (joyStickLocalPos.x < 0)
-        {
-            resultMoving += new Vector3(-1.0f, 0.0f);
-        }
-
-        if (joyStickLocalPos.y >0)
-        {
-            resultMoving += new Vector3(0.0f, 1.0f);
-        }
-        else if (joyStickLocalPos.y < 0)
-        {
-            resultMoving += new Vector3(0.0f, -1.0f);
-        }
-
-        resultMoving *= movingSpeed;
-        this.transform.position += resultMoving;
-    }
-    */
-
 
     public void SetMove(JoyStick joyStick)
     {
@@ -67,6 +80,8 @@ public class Hero : MonoBehaviour
         this.transform.position += resultMoving;
 
         SetLeftRight(joyStickLocalpos.x);
+
+        Invoke("TempResetState", 0.5f);
     }
 
     public void SetLeftRight(float joysticLocalPosX)
@@ -83,12 +98,74 @@ public class Hero : MonoBehaviour
         }
     }
 
+    void TempResetState()
+    {
+        Debug.Log("TempResetState()");
+        heroState = HeroState.Idle;
+    }
+
     protected void NextState()
     {
         string methodName = heroState.ToString() + "State";
         StartCoroutine(methodName);
     }
 
+    IEnumerator IdleState()
+    {
+        animator.CrossFade("Idle", 0.3f);
+
+        for (int i = 0; i < havingMonster.Count; i++)
+        {
+            havingMonster[i].monsterState = Monster.MonsterState.Idle;
+        }
+
+        while (heroState == HeroState.Idle)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+
+    IEnumerator RunState()
+    {
+        animator.CrossFade("Run", 0.3f);
+
+        for (int i = 0; i < havingMonster.Count; i++)
+        {
+            havingMonster[i].monsterState = Monster.MonsterState.Run;
+            havingMonster[i].image.localScale = this.image.localScale;
+        }
+
+        while (heroState == HeroState.Run)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+    IEnumerator AttackState()
+    {
+        animator.CrossFade("Attack", 0.3f);
+
+        while (heroState == HeroState.Attack)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
+    IEnumerator DeadState()
+    {
+        animator.CrossFade("Dead", 0.3f);
+
+        while (heroState == HeroState.Dead)
+        {
+            yield return null;
+        }
+
+        NextState();
+    }
 
 
     public enum HeroState

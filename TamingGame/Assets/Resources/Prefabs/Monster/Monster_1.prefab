@@ -349,6 +349,7 @@ GameObject:
   - component: {fileID: 776089138}
   - component: {fileID: 8916979714673595377}
   - component: {fileID: 6582963627960467295}
+  - component: {fileID: 5131035731008715086}
   m_Layer: 0
   m_Name: Monster_1
   m_TagString: Untagged
@@ -384,6 +385,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c415b5afa7a9e46a763b0841425863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigidBody: {fileID: 0}
+  inGameMgr: {fileID: 0}
+  hero: {fileID: 0}
+  isTaming: 1
+  monsterState: 0
+  animator: {fileID: 0}
+  image: {fileID: 0}
+  mySpot: {fileID: 0}
+  movingValue: 0
+  dampTime: 0.13
 --- !u!135 &776089138
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -423,5 +434,18 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!135 &5131035731008715086
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2832867959740877366}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.24
+  m_Center: {x: 0, y: 0.25, z: 0}
