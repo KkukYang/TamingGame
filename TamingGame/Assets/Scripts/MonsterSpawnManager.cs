@@ -14,6 +14,8 @@ public class MonsterSpawnManager : MonoBehaviour
     public Transform liveMonster;
     public Dictionary<int, List<Monster>> dicMonsterEachGroupNum = new Dictionary<int, List<Monster>>();
 
+    public List<Transform> tmBossGenSpot = new List<Transform>();
+
     private void Awake()
     {
         resourceMgr = ResourceManager.instance;
@@ -54,6 +56,21 @@ public class MonsterSpawnManager : MonoBehaviour
                 _monster.SetActive(true);
             }
 
+        }
+
+        for(int i = 0; i<tmBossGenSpot.Count; i++)
+        {
+            GameObject _monster = resourceMgr.GetMonster("Monster_" + (i + 4).ToString());
+            _monster.transform.parent = liveMonster;
+            _monster.transform.localScale = Vector3.one;
+            _monster.transform.position = tmBossGenSpot[i].position;
+
+            _monster.GetComponent<Monster>().initPos = _monster.transform.position;
+            _monster.GetComponent<Monster>().isTaming = false;
+            _monster.GetComponent<Monster>().inGameMgr = inGameMgr;
+            _monster.GetComponent<Monster>().resourceMgr = resourceMgr;
+
+            _monster.SetActive(true);
         }
     }
 

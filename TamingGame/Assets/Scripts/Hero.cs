@@ -75,9 +75,27 @@ public class Hero : MonoBehaviour
         //    }
         //}
         direction = (this.transform.position - prePos).normalized;
-        prePos = this.transform.position;
         rigidBody.velocity = Vector3.zero;
 
+        if (heroState == HeroState.Idle)
+        {
+            if (Vector3.Distance(this.transform.position, prePos) > 0.02f)
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Run"))
+                {
+                    animator.Play("Run");
+                }
+            }
+            else
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+                {
+                    animator.Play("Idle");
+                }
+            }
+        }
+
+        prePos = this.transform.position;
     }
 
     public void SetMove(JoyStick joyStick)
@@ -87,11 +105,16 @@ public class Hero : MonoBehaviour
             if(attackMonster.Count > 0)
             {
                 heroState = HeroState.Attack;
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                {
+                    animator.Play("Attack");
+                }
+
             }
             else
             {
 
-                heroState = HeroState.Run;
+                heroState = HeroState.Idle;
                 Invoke("ResetState", 0.5f);
 
             }
@@ -105,6 +128,7 @@ public class Hero : MonoBehaviour
             this.transform.position += resultMoving;
 
             SetLeftRight(joyStickLocalpos.x);
+
 
         }
     }
@@ -125,8 +149,11 @@ public class Hero : MonoBehaviour
 
     void ResetState()
     {
-        Debug.Log("ResetState()");
         heroState = HeroState.Idle;
+        foreach(Monster _monster in havingMonster)
+        {
+            _monster.rigidBody.velocity = Vector3.zero;
+        }
     }
 
     public void Hit(float _damage)
@@ -187,7 +214,7 @@ public class Hero : MonoBehaviour
 
     IEnumerator IdleState()
     {
-        animator.CrossFade("Idle", 0.3f);
+        animator.Play("Idle");
 
         for (int i = 0; i < havingMonster.Count; i++)
         {
@@ -202,26 +229,26 @@ public class Hero : MonoBehaviour
         NextState();
     }
 
-    IEnumerator RunState()
-    {
-        animator.CrossFade("Run", 0.3f);
+    //IEnumerator RunState()
+    //{
+    //    animator.CrossFade("Run", 0.3f);
 
-        for (int i = 0; i < havingMonster.Count; i++)
-        {
-            havingMonster[i].monsterState = Monster.MonsterState.Run;
-            havingMonster[i].image.localScale = this.image.localScale;
-        }
+    //    for (int i = 0; i < havingMonster.Count; i++)
+    //    {
+    //        havingMonster[i].monsterState = Monster.MonsterState.Run;
+    //        havingMonster[i].image.localScale = this.image.localScale;
+    //    }
 
-        while (heroState == HeroState.Run)
-        {
-            yield return null;
-        }
+    //    while (heroState == HeroState.Run)
+    //    {
+    //        yield return null;
+    //    }
 
-        NextState();
-    }
+    //    NextState();
+    //}
     IEnumerator AttackState()
     {
-        animator.CrossFade("Attack", 0.3f);
+        animator.Play("Attack");
         image.GetComponent<AnimationEvent>().add = new AnimationEvent.Add(Attack);
 
         while (heroState == HeroState.Attack)
@@ -233,7 +260,7 @@ public class Hero : MonoBehaviour
     }
     IEnumerator DeadState()
     {
-        animator.CrossFade("Dead", 0.3f);
+        animator.Play("Dead");
 
         while (heroState == HeroState.Dead)
         {
@@ -247,7 +274,7 @@ public class Hero : MonoBehaviour
     public enum HeroState
     {
         Idle,
-        Run,
+        //Run,
         Attack,
         Dead,
 

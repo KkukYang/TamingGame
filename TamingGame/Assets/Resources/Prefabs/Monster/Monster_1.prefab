@@ -405,13 +405,14 @@ MonoBehaviour:
   resourceMgr: {fileID: 0}
   hero: {fileID: 0}
   isTaming: 1
-  isNoticeHero: 0
+  isNoticeTarget: 0
   monsterState: 0
   animator: {fileID: 0}
   image: {fileID: 0}
   initPos: {x: 0, y: 0, z: 0}
   prePos: {x: 0, y: 0, z: 0}
   hpBar: {fileID: 0}
+  attackTarget: {fileID: 0}
   maxHp: 100
   hp: 100
   ap: 6

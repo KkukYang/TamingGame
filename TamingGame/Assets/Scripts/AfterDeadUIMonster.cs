@@ -54,7 +54,13 @@ public class AfterDeadUIMonster : MonoBehaviour
         target.GetComponent<Monster>().isTaming = true;
         target.GetComponent<Monster>().hp = target.GetComponent<Monster>().maxHp;
         target.GetComponent<Monster>().monsterState = Monster.MonsterState.Idle;
-
+        //target.GetComponent<Monster>().attackMonster.Clear();
+        
+        foreach(Collider _col in target.GetComponents<Collider>())
+        {
+            _col.enabled = false;
+            _col.enabled = true;
+        }
         ////히어로 공격목록에 있으면 삭제
         //if (hero.attackMonster.Find(_monster => _monster == target.GetComponent<Monster>()) != null)
         //{

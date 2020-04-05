@@ -25,7 +25,8 @@ public class MonsterSensor : MonoBehaviour
                 {
                     //야생일때. 공격상태로.
                     other.gameObject.GetComponent<Monster>().isNoticeTarget = true;
-                    other.gameObject.GetComponent<Monster>().monsterState = Monster.MonsterState.Run;
+                    other.gameObject.GetComponent<Monster>().attackTarget = this.transform.parent.gameObject;
+                    other.gameObject.GetComponent<Monster>().monsterState = Monster.MonsterState.Idle;
                 }
             }
         }

@@ -18,7 +18,7 @@ public class Monster : MonoBehaviour
     public HPBar hpBar;
 
     public GameObject attackTarget;
-    public List<Monster> attackMonster = new List<Monster>();
+    //public List<Monster> attackMonster = new List<Monster>();
 
     public float maxHp = 100;
     public float hp = 0;
@@ -28,6 +28,8 @@ public class Monster : MonoBehaviour
     public float movingValue;
     public float dampTime = 0.15f;
     private Vector3 velocity = Vector3.zero;
+
+    public bool isBoss = false;
 
     protected virtual void Awake()
     {
@@ -44,7 +46,7 @@ public class Monster : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        attackMonster.Clear();
+        //attackMonster.Clear();
 
         if (inGameMgr == null)
         {
@@ -96,35 +98,43 @@ public class Monster : MonoBehaviour
                 FollowTarget(inGameMgr.hero.transform);
             }
 
-        }
-        else
-        {
-            if (isNoticeTarget)
+            if (attackTarget == null)
             {
-                //몬스터가 히어로 가까이 갔을때 부터, 히어로나 테이밍된 몬스터 공격.
-                if (Vector3.Distance(this.transform.position, hero.transform.position) < 2.0f)
+                if (hero.attackMonster.Count > 0)
                 {
+                    attackTarget = hero.attackMonster[Random.Range(0, hero.attackMonster.Count)].gameObject;
                     monsterState = MonsterState.Attack;
                 }
                 else
                 {
-                    //히어로한테 감.
-                    transform.position = Vector3.Lerp(this.transform.position, hero.transform.position, 0.01f);
+                    monsterState = MonsterState.Idle;
                 }
             }
-            else if (!isNoticeTarget)
+            else
             {
-                if (Vector3.Distance(this.transform.position, initPos) < 1.0f)
+                monsterState = MonsterState.Idle;
+            }
+        }
+        else
+        {
+            if (attackTarget == null)
+            {
+                if (hero.havingMonster.Count > 0)
                 {
-                    monsterState = MonsterState.Idle;
+                    attackTarget = hero.havingMonster[Random.Range(0, hero.havingMonster.Count)].gameObject;
                 }
                 else
                 {
-                    //제자리로 감.
-                    transform.position = Vector3.Lerp(this.transform.position, initPos, 0.01f);
+                    monsterState = MonsterState.Idle;
                 }
-
             }
+            else
+            {
+                monsterState = MonsterState.Attack;
+            }
+            
+            AttackAction();
+
 
         }
 
@@ -138,10 +148,58 @@ public class Monster : MonoBehaviour
             image.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
 
+        if(monsterState == MonsterState.Idle)
+        {
+            if(Vector3.Distance(this.transform.position, prePos) > 0.02f)
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Run"))
+                {
+                    animator.CrossFade("Run", 0.2f);
+                }
+            }
+            else
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+                {
+                    animator.CrossFade("Idle", 0.2f);
+                }
+            }
+        }
+
 
         prePos = this.transform.position;
     }
 
+    void AttackAction()
+    {
+        if (isNoticeTarget)
+        {
+            //몬스터가 히어로 가까이 갔을때 부터, 히어로나 테이밍된 몬스터 공격.
+            if (Vector3.Distance(this.transform.position, attackTarget.transform.position) < 2.0f)
+            {
+                monsterState = MonsterState.Attack;
+            }
+            else
+            {
+                //히어로한테 감.
+                transform.position = Vector3.Lerp(this.transform.position, attackTarget.transform.position, 0.01f);
+            }
+        }
+        else if (!isNoticeTarget)
+        {
+            if (Vector3.Distance(this.transform.position, initPos) < 1.0f)
+            {
+                monsterState = MonsterState.Idle;
+            }
+            else
+            {
+                //제자리로 감.
+                transform.position = Vector3.Lerp(this.transform.position, initPos, 0.01f);
+            }
+
+        }
+
+    }
 
     protected void FollowTarget(Transform target)
     {
@@ -156,35 +214,128 @@ public class Monster : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
         {
-            if (!other.gameObject.GetComponent<Monster>().isTaming
-                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  //죽었지만 테이밍 되기 전일수도
+            //테이밍이 따른 다른편을 공격해야함.  
+            if (!other.gameObject.GetComponent<Monster>().isTaming && this.isTaming
+                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  
+            {
+                attackTarget = other.gameObject;
+            }
+            else if (other.gameObject.GetComponent<Monster>().isTaming && !this.isTaming
+                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  
+            {
+                attackTarget = other.gameObject;
+            }
+        }
+    }
+
+
+    /*
+        private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        {
+            //테이밍이 따른 다른편을 공격해야함.
+            if (!other.gameObject.GetComponent<Monster>().isTaming && this.isTaming
+                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  
             {
                 if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) == null)
                 {
                     attackMonster.Add(other.gameObject.GetComponent<Monster>());
+                    other.gameObject.GetComponent<Monster>().isNoticeTarget = true;
+                    other.gameObject.GetComponent<Monster>().attackTarget = this.gameObject;
+                }
+            }
+            else if (other.gameObject.GetComponent<Monster>().isTaming && !this.isTaming
+                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  
+            {
+                if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) == null)
+                {
+                    attackMonster.Add(other.gameObject.GetComponent<Monster>());
+                    other.gameObject.GetComponent<Monster>().isNoticeTarget = true;
+                    other.gameObject.GetComponent<Monster>().attackTarget = this.gameObject;
                 }
             }
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
-        {
-            if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) != null)
-            {
-                attackMonster.Remove(other.gameObject.GetComponent<Monster>());
-            }
-        }
+        */
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+    //    {
 
-    }
+    //        if (!other.gameObject.GetComponent<Monster>().isTaming && this.isTaming
+    //            && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  //죽었지만 테이밍 되기 전일수도
+    //        {
+    //            if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) != null)
+    //            {
+    //                attackMonster.Remove(other.gameObject.GetComponent<Monster>());
+    //                other.gameObject.GetComponent<Monster>().isNoticeTarget = false;
+    //                if (attackMonster.Count > 0)
+    //                {
+    //                    attackTarget = attackMonster[Random.Range(0, attackMonster.Count)].gameObject;
+    //                }
+    //                else
+    //                {
+    //                    attackTarget = null;
+    //                }
+    //            }
+    //        }
+    //        else if (other.gameObject.GetComponent<Monster>().isTaming && !this.isTaming
+    //            && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  //죽었지만 테이밍 되기 전일수도
+    //        {
+    //            if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) != null)
+    //            {
+    //                attackMonster.Remove(other.gameObject.GetComponent<Monster>());
+    //                other.gameObject.GetComponent<Monster>().isNoticeTarget = false;
+    //                if (attackMonster.Count > 0)
+    //                {
+    //                    attackTarget = attackMonster[Random.Range(0, attackMonster.Count)].gameObject;
+    //                }
+    //                else
+    //                {
+    //                    attackTarget = null;
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //}
 
     protected void Attack()
     {
-        if (Vector3.Distance(this.transform.position, hero.transform.position) < 2.0f)
+        if (attackTarget != null)
         {
+            if (Vector3.Distance(this.transform.position, attackTarget.transform.position) < 2.0f)
+            {
+                if(attackTarget.GetComponent<Monster>() == null)
+                {
+                    hero.Hit(ap);
+                }
+                else
+                {
+                    attackTarget.GetComponent<Monster>().Hit(ap);
+                }
+                //if (isTaming)
+                //{
+                //    attackTarget.GetComponent<Monster>().Hit(ap);
+                //}
+                //else
+                //{
+                //    hero.Hit(ap);
+                //}
+            }
 
-            hero.Hit(ap);
+            if(isBoss)
+            {
+                //스킬생성 / 타겟 지정 / SetActive True
+                GameObject _skill = resourceMgr.CreateEffectObj(this.transform.name, this.transform.position, 3.0f);
+                _skill.transform.parent = null;
+                _skill.transform.name = this.transform.name;
+                _skill.GetComponent<Skill>().target = attackTarget;
+                _skill.GetComponent<Skill>().master = this;
+                _skill.SetActive(true);
+            }
         }
 
     }
@@ -206,11 +357,59 @@ public class Monster : MonoBehaviour
         hpBar.UpdateHP(hp / maxHp);
     }
 
+    protected void Death()
+    {
+        isNoticeTarget = false;
+
+        //히어로 공격목록에 있으면 삭제
+        if (hero.attackMonster.Find(_monster => _monster == this) != null)
+        {
+            hero.attackMonster.Remove(this);
+        }
+
+        //테이밍된 몬스터일 경우
+        if (hero.havingMonster.Find(_monster => _monster == this) != null)
+        {
+            hero.havingMonster.Remove(this);
+        }
+
+        if(isTaming)
+        {
+            resourceMgr.ReleaseMonster(this.gameObject);
+        }
+        else
+        {
+            Vector3 viewportPos = inGameMgr.mainCam.WorldToViewportPoint(this.transform.position);
+            RectTransform _rectTmCanvas = inGameMgr.UICamera.transform.Find("Canvas").GetComponent<RectTransform>();
+            Vector3 uiPosInCanvas = new Vector3((viewportPos.x * _rectTmCanvas.rect.width) - (_rectTmCanvas.rect.width * 0.5f),
+                (viewportPos.y * _rectTmCanvas.rect.height) - (_rectTmCanvas.rect.height * 0.5f), 0.0f);
+
+            GameObject _ui = null;
+            if(resourceMgr.uiBox.transform.Find("AfterDeadUIMonster")!= null)
+            {
+                _ui = resourceMgr.uiBox.transform.Find("AfterDeadUIMonster").gameObject;
+            }
+            else
+            {
+                _ui = Instantiate(resourceMgr.ui["AfterDeadUIMonster"]) as GameObject;
+            }
+            _ui.transform.name = "AfterDeadUIMonster";
+            _ui.transform.parent = _rectTmCanvas.Find("WorldUIBox");
+            _ui.transform.localScale = Vector3.one;
+            _ui.transform.localPosition = uiPosInCanvas;
+
+            _ui.GetComponent<AfterDeadUIMonster>().inGameMgr = inGameMgr;
+            _ui.GetComponent<AfterDeadUIMonster>().resourceMgr = resourceMgr;
+            _ui.GetComponent<AfterDeadUIMonster>().target = this.transform;
+            _ui.SetActive(true);
+        }
+    }
+
     public enum MonsterState
     {
         Idle,
         Attack,
-        Run,
+        //Run,
         Dead,
     }
 }
