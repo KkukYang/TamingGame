@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 241433693}
   - component: {fileID: 241433694}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 774312773}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1298129195}
   - component: {fileID: 1298129196}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Image_hp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +201,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2078246771}
   - component: {fileID: 2078246772}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HPBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,6 +236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a177c567839b57f45be8a860765dc16a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpControlImage: {fileID: 0}
+  showingTime: 0
 --- !u!1 &2832867959660542535
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +249,8 @@ GameObject:
   - component: {fileID: 2832867959660542534}
   - component: {fileID: 2832867959660542533}
   - component: {fileID: 2832867959660542532}
-  m_Layer: 0
+  - component: {fileID: 3444607703920322551}
+  m_Layer: 9
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,6 +339,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3444607703920322551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2832867959660542535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55968cfc75cb8164d9d24e7dee50dd24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2832867959740877366
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +365,7 @@ GameObject:
   - component: {fileID: 8916979714673595377}
   - component: {fileID: 6582963627960467295}
   - component: {fileID: 5131035731008715086}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Monster_1
   m_TagString: Monster
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -387,6 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 0}
   inGameMgr: {fileID: 0}
+  resourceMgr: {fileID: 0}
   hero: {fileID: 0}
   isTaming: 1
   isNoticeHero: 0
@@ -394,8 +410,11 @@ MonoBehaviour:
   animator: {fileID: 0}
   image: {fileID: 0}
   initPos: {x: 0, y: 0, z: 0}
+  prePos: {x: 0, y: 0, z: 0}
+  hpBar: {fileID: 0}
+  maxHp: 100
   hp: 100
-  ap: 1
+  ap: 6
   dp: 0
   movingValue: 0
   dampTime: 0.13
@@ -407,7 +426,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2832867959740877366}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.24
@@ -448,7 +467,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2832867959740877366}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.46

@@ -78890,4 +78890,5 @@ MonoBehaviour:
   mainCam: {fileID: 0}
   UICamera: {fileID: 0}
   MainMapCamera: {fileID: 989131075348564030}
+  ground: {fileID: 0}
   isMainMap: 0

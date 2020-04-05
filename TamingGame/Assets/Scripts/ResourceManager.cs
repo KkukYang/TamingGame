@@ -28,21 +28,24 @@ public class ResourceManager : MonoBehaviour
 
     public Dictionary<string, GameObject> monster = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> effect = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> ui = new Dictionary<string, GameObject>();
 
     public GameObject effectBox;
     public Dictionary<string, Queue<GameObject>> effectDic = new Dictionary<string, Queue<GameObject>>();
 
     public GameObject monsterBox;
-
+    public GameObject uiBox;
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
 
         effectBox = transform.Find("EffectBox").gameObject;
         monsterBox = transform.Find("MonsterBox").gameObject;
+        uiBox = transform.Find("UIBox").gameObject;
 
         effectBox.SetActive(false);
         monsterBox.SetActive(false);
+        uiBox.SetActive(false);
 
         // 적 셋팅.
         object[] monsterObj = Resources.LoadAll("Prefabs/Monster");
@@ -60,6 +63,15 @@ public class ResourceManager : MonoBehaviour
             GameObject obj = effObj[i] as GameObject;
             obj.SetActive(false);
             effect.Add(obj.name, obj);
+        }
+
+        // ui 셋팅.
+        object[] uiObj = Resources.LoadAll("Prefabs/UI");
+        for (int i = 0; i < uiObj.Length; i++)
+        {
+            GameObject obj = uiObj[i] as GameObject;
+            obj.SetActive(false);
+            ui.Add(obj.name, obj);
         }
 
         Resources.UnloadUnusedAssets();

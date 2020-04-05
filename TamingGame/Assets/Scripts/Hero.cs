@@ -9,6 +9,7 @@ public class Hero : MonoBehaviour
     private Transform image;
 
     public List<Monster> havingMonster = new List<Monster>();
+    public List<Monster> attackMonster = new List<Monster>();
     public GameObject sampleSpot;
 
     public Rigidbody rigidBody;
@@ -16,9 +17,12 @@ public class Hero : MonoBehaviour
     public Vector3 direction;
     public Vector3 prePos;
 
-    public int hp = 100;
-    public int ap = 30;
-    public int dp = 5;
+    public HPBar hpBar;
+
+    public float maxHp = 100;
+    public float hp = 100;
+    public float ap = 30;
+    public float dp = 5;
 
     private void Awake()
     {
@@ -26,6 +30,7 @@ public class Hero : MonoBehaviour
         image = transform.Find("Image");
         animator = image.GetComponent<Animator>();
         rigidBody = this.GetComponent<Rigidbody>();
+        hpBar = this.transform.Find("HPBar").GetComponent<HPBar>();
 
         float _val = 360.0f / havingMonster.Count;
 
@@ -47,6 +52,13 @@ public class Hero : MonoBehaviour
 
     private void OnEnable()
     {
+        attackMonster.Clear();
+        //havingMonster.Clear();
+
+        hp = maxHp;
+        hpBar.Init();
+        hpBar.gameObject.SetActive(false);
+
         prePos = this.transform.position;
         heroState = HeroState.Idle;
         NextState();
@@ -54,59 +66,118 @@ public class Hero : MonoBehaviour
 
     void Update()
     {
+
+        //if (heroState == HeroState.Run)
+        //{
+        //    for (int i = 0; i < havingMonster.Count; i++)
+        //    {
+        //        havingMonster[i].image.localScale = this.image.localScale;
+        //    }
+        //}
+        direction = (this.transform.position - prePos).normalized;
+        prePos = this.transform.position;
         rigidBody.velocity = Vector3.zero;
-
-        if(heroState == HeroState.Run)
-        {
-            for (int i = 0; i < havingMonster.Count; i++)
-            {
-                havingMonster[i].image.localScale = this.image.localScale;
-            }
-
-            direction = (this.transform.position - prePos).normalized;
-
-            prePos = this.transform.position;
-
-        }
 
     }
 
     public void SetMove(JoyStick joyStick)
     {
-        heroState = HeroState.Run;
+        if (heroState != HeroState.Dead)
+        {
+            if(attackMonster.Count > 0)
+            {
+                heroState = HeroState.Attack;
+            }
+            else
+            {
 
-        Rect rectRange = joyStick.m_JoyStickBackGround.GetComponent<RectTransform>().rect;
-        Vector3 joyStickLocalpos = joyStick.m_JoyStick.transform.localPosition;
-        Vector3 resultMoving = Vector3.zero;
+                heroState = HeroState.Run;
+                Invoke("ResetState", 0.5f);
 
-        resultMoving += new Vector3(joyStickLocalpos.x / (rectRange.width * 0.5f), joyStickLocalpos.y / (rectRange.height * 0.5f));
-        resultMoving *= movingSpeed;
-        this.transform.position += resultMoving;
+            }
 
-        SetLeftRight(joyStickLocalpos.x);
+            Rect rectRange = joyStick.m_JoyStickBackGround.GetComponent<RectTransform>().rect;
+            Vector3 joyStickLocalpos = joyStick.m_JoyStick.transform.localPosition;
+            Vector3 resultMoving = Vector3.zero;
 
-        Invoke("TempResetState", 0.5f);
+            resultMoving += new Vector3(joyStickLocalpos.x / (rectRange.width * 0.5f), joyStickLocalpos.y / (rectRange.height * 0.5f));
+            resultMoving *= movingSpeed;
+            this.transform.position += resultMoving;
+
+            SetLeftRight(joyStickLocalpos.x);
+
+        }
     }
 
     public void SetLeftRight(float joysticLocalPosX)
     {
-        if(joysticLocalPosX > 0)
+        if (joysticLocalPosX > 0)
         {
             //Right
             image.localScale = new Vector3(-1.0f, 1.0f);
         }
-        else if(joysticLocalPosX < 0)
+        else if (joysticLocalPosX < 0)
         {
             //Left
             image.localScale = new Vector3(1.0f, 1.0f);
         }
     }
 
-    void TempResetState()
+    void ResetState()
     {
-        Debug.Log("TempResetState()");
+        Debug.Log("ResetState()");
         heroState = HeroState.Idle;
     }
+
+    public void Hit(float _damage)
+    {
+        hp -= ((_damage - dp) < 0) ? 0.0f : (_damage - dp);
+        hpBar.gameObject.SetActive(true);
+        hpBar.UpdateHP(hp / maxHp);
+
+        if (hp <= 0)
+        {
+            heroState = HeroState.Dead;
+        }
+    }
+
+    public void Attack()
+    {
+        //리스트에 등록된 몬스터들중 하나를 팬다.
+        if (attackMonster.Count > 0)
+        {
+            attackMonster[Random.Range(0, attackMonster.Count)].Hit(ap);
+
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        {
+            //일단 죽지 않아야. //테이밍 되지 않은 상태.
+            if(!other.gameObject.GetComponent<Monster>().isTaming 
+                && other.gameObject.GetComponent<Monster>().monsterState != Monster.MonsterState.Dead)  //죽었지만 테이밍 되기 전일수도
+            {
+                if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) == null)
+                {
+                    attackMonster.Add(other.gameObject.GetComponent<Monster>());
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
+        {
+            if (attackMonster.Find(_monster => _monster == other.gameObject.GetComponent<Monster>()) != null)
+            {
+                attackMonster.Remove(other.gameObject.GetComponent<Monster>());
+            }
+        }
+    }
+
 
     protected void NextState()
     {
@@ -151,6 +222,7 @@ public class Hero : MonoBehaviour
     IEnumerator AttackState()
     {
         animator.CrossFade("Attack", 0.3f);
+        image.GetComponent<AnimationEvent>().add = new AnimationEvent.Add(Attack);
 
         while (heroState == HeroState.Attack)
         {

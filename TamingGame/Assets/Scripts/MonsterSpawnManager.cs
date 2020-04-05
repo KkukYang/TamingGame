@@ -46,7 +46,10 @@ public class MonsterSpawnManager : MonoBehaviour
                     , Random.Range(-1.0f, 1.0f)
                     , 0.0f);
 
+                _monster.GetComponent<Monster>().initPos = _monster.transform.position;
                 _monster.GetComponent<Monster>().isTaming = false;
+                _monster.GetComponent<Monster>().inGameMgr = inGameMgr;
+                _monster.GetComponent<Monster>().resourceMgr = resourceMgr;
 
                 _monster.SetActive(true);
             }
